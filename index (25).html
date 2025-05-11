@@ -1,0 +1,1002 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SourceCode Market - E-commerce for Source Code</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link
+    href="https://unpkg.com/aos@2.3.1/dist/aos.css"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .dark body {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    .dark .card {
+      background-color: #1e1e1e;
+    }
+    .dark .btn-primary {
+      background-color: #2563eb;
+      color: white;
+    }
+    .dark .input, .dark .select {
+      background-color: #2c2c2c;
+      color: #e0e0e0;
+      border-color: #444;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900 transition-colors duration-300">
+  <div id="app" class="min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav
+      class="flex items-center justify-between px-6 py-4 shadow-md bg-white dark:bg-gray-900 fixed w-full z-30"
+      data-aos="fade-down"
+    >
+      <a href="#" class="text-2xl font-bold text-indigo-600">SourceCode Market</a>
+      <div class="hidden md:flex space-x-6 items-center">
+        <a href="#catalog" class="hover:text-indigo-600 transition">Marketplace</a>
+        <a href="#profile" class="hover:text-indigo-600 transition">Profile</a>
+        <button
+          id="darkModeToggle"
+          aria-label="Toggle Dark Mode"
+          class="text-gray-600 dark:text-gray-300 focus:outline-none"
+        >
+          <i class="fas fa-moon"></i>
+        </button>
+        <button
+          id="cartBtn"
+          aria-label="Open Cart"
+          class="relative text-gray-600 dark:text-gray-300 focus:outline-none"
+        >
+          <i class="fas fa-shopping-cart text-xl"></i>
+          <span
+            id="cartCount"
+            class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center"
+            >0</span
+          >
+        </button>
+      </div>
+      <button
+        id="mobileMenuBtn"
+        class="md:hidden text-gray-600 dark:text-gray-300 focus:outline-none"
+        aria-label="Open Menu"
+      >
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div
+      id="mobileMenu"
+      class="fixed inset-0 bg-white dark:bg-gray-900 z-40 transform -translate-x-full transition-transform duration-300 md:hidden"
+    >
+      <div class="flex justify-between items-center px-6 py-4 border-b border-gray-300 dark:border-gray-700">
+        <a href="#" class="text-2xl font-bold text-indigo-600">SourceCode Market</a>
+        <button
+          id="mobileMenuCloseBtn"
+          class="text-gray-600 dark:text-gray-300 focus:outline-none"
+          aria-label="Close Menu"
+        >
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <nav class="flex flex-col space-y-4 px-6 py-6 text-lg">
+        <a href="#catalog" class="hover:text-indigo-600 transition" onclick="closeMobileMenu()">Marketplace</a>
+        <a href="#profile" class="hover:text-indigo-600 transition" onclick="closeMobileMenu()">Profile</a>
+        <button
+          id="mobileDarkModeToggle"
+          aria-label="Toggle Dark Mode"
+          class="text-gray-600 dark:text-gray-300 focus:outline-none flex items-center space-x-2"
+          onclick="toggleDarkMode()"
+        >
+          <i class="fas fa-moon"></i><span>Toggle Dark Mode</span>
+        </button>
+        <button
+          id="mobileCartBtn"
+          aria-label="Open Cart"
+          class="relative text-gray-600 dark:text-gray-300 focus:outline-none flex items-center space-x-2"
+          onclick="openCart()"
+        >
+          <i class="fas fa-shopping-cart text-xl"></i>
+          <span
+            id="mobileCartCount"
+            class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center"
+            >0</span
+          >
+          <span>Cart</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-20 px-4 md:px-12 max-w-7xl mx-auto">
+      <!-- Search & Filter -->
+      <section id="catalog" class="mb-12" data-aos="fade-up">
+        <h2 class="text-3xl font-semibold mb-6 text-center md:text-left">Marketplace</h2>
+        <div class="flex flex-col md:flex-row md:items-center md:space-x-4 mb-6">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search source code..."
+            class="input w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
+          />
+          <select
+            id="categoryFilter"
+            class="select w-full md:w-1/4 mt-4 md:mt-0 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
+          >
+            <option value="">All Categories</option>
+            <option value="template">Template</option>
+            <option value="landing-page">Landing Page</option>
+            <option value="app">Small App</option>
+          </select>
+        </div>
+
+        <!-- Products Grid -->
+        <div
+          id="productsGrid"
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+        >
+          <!-- Product Cards inserted by JS -->
+        </div>
+      </section>
+
+      <!-- Product Detail Modal -->
+      <div
+        id="productDetailModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden"
+        aria-modal="true"
+        role="dialog"
+        aria-labelledby="productDetailTitle"
+      >
+        <div
+          class="bg-white dark:bg-gray-900 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-lg p-6 relative"
+          data-aos="zoom-in"
+        >
+          <button
+            id="closeProductDetailBtn"
+            class="absolute top-4 right-4 text-gray-600 dark:text-gray-300 hover:text-red-600 focus:outline-none"
+            aria-label="Close product detail"
+          >
+            <i class="fas fa-times text-2xl"></i>
+          </button>
+          <h3 id="productDetailTitle" class="text-2xl font-semibold mb-4"></h3>
+          <div class="flex flex-col md:flex-row md:space-x-6">
+            <div class="md:w-1/2">
+              <img
+                id="productDetailImage"
+                src=""
+                alt="Product preview screenshot"
+                class="rounded-md w-full h-auto object-cover mb-4 md:mb-0"
+              />
+              <div class="mt-4">
+                <iframe
+                  id="productDemoIframe"
+                  src=""
+                  class="w-full h-64 rounded-md border border-gray-300 dark:border-gray-700"
+                  title="Live demo of product"
+                  allowfullscreen
+                ></iframe>
+              </div>
+            </div>
+            <div class="md:w-1/2 flex flex-col justify-between">
+              <div>
+                <p id="productDescription" class="mb-4 text-gray-700 dark:text-gray-300"></p>
+                <ul
+                  id="productFeatures"
+                  class="list-disc list-inside mb-6 text-gray-700 dark:text-gray-300"
+                ></ul>
+              </div>
+              <div class="flex items-center justify-between">
+                <span
+                  id="productPrice"
+                  class="text-2xl font-bold text-indigo-600 dark:text-indigo-400"
+                ></span>
+                <button
+                  id="addToCartBtn"
+                  class="btn-primary bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart Sidebar -->
+      <aside
+        id="cartSidebar"
+        class="fixed top-0 right-0 h-full w-80 bg-white dark:bg-gray-900 shadow-lg transform translate-x-full transition-transform duration-300 z-50 flex flex-col"
+        aria-label="Shopping cart"
+      >
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-300 dark:border-gray-700">
+          <h3 class="text-xl font-semibold">Shopping Cart</h3>
+          <button
+            id="closeCartBtn"
+            class="text-gray-600 dark:text-gray-300 hover:text-red-600 focus:outline-none"
+            aria-label="Close cart"
+          >
+            <i class="fas fa-times text-2xl"></i>
+          </button>
+        </div>
+        <div
+          id="cartItemsContainer"
+          class="flex-grow overflow-y-auto px-6 py-4 space-y-4"
+        >
+          <p class="text-gray-500 dark:text-gray-400">Your cart is empty.</p>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-300 dark:border-gray-700">
+          <div class="flex justify-between mb-4">
+            <span class="font-semibold">Total:</span>
+            <span id="cartTotal" class="font-bold text-indigo-600 dark:text-indigo-400">Rp 0</span>
+          </div>
+          <button
+            id="checkoutBtn"
+            class="w-full btn-primary bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-md transition disabled:opacity-50"
+            disabled
+          >
+            Proceed to Checkout
+          </button>
+        </div>
+      </aside>
+
+      <!-- Profile Section -->
+      <section
+        id="profile"
+        class="my-12 max-w-4xl mx-auto"
+        data-aos="fade-up"
+      >
+        <h2 class="text-3xl font-semibold mb-6 text-center md:text-left">User Profile</h2>
+        <div id="authSection" class="space-y-6">
+          <!-- Login/Register forms or Profile info inserted by JS -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-indigo-600 text-white py-6 mt-12">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        &copy; 2024 SourceCode Market. All rights reserved.
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    AOS.init({
+      once: true,
+      duration: 600,
+      easing: 'ease-in-out',
+    });
+
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const mobileDarkModeToggle = document.getElementById('mobileDarkModeToggle');
+    const htmlEl = document.documentElement;
+
+    function setDarkMode(enabled) {
+      if (enabled) {
+        htmlEl.classList.add('dark');
+        localStorage.setItem('darkMode', 'true');
+      } else {
+        htmlEl.classList.remove('dark');
+        localStorage.setItem('darkMode', 'false');
+      }
+    }
+
+    function toggleDarkMode() {
+      const isDark = htmlEl.classList.contains('dark');
+      setDarkMode(!isDark);
+    }
+
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+    mobileDarkModeToggle.addEventListener('click', () => {
+      toggleDarkMode();
+      closeMobileMenu();
+    });
+
+    // Initialize dark mode based on localStorage or system preference
+    if (
+      localStorage.getItem('darkMode') === 'true' ||
+      (!('darkMode' in localStorage) &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      setDarkMode(true);
+    } else {
+      setDarkMode(false);
+    }
+
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuCloseBtn = document.getElementById('mobileMenuCloseBtn');
+
+    function openMobileMenu() {
+      mobileMenu.classList.remove('-translate-x-full');
+    }
+    function closeMobileMenu() {
+      mobileMenu.classList.add('-translate-x-full');
+    }
+
+    mobileMenuBtn.addEventListener('click', openMobileMenu);
+    mobileMenuCloseBtn.addEventListener('click', closeMobileMenu);
+
+    // Products Data (sample 15 items)
+    const products = [
+      {
+        id: 1,
+        title: 'Modern Portfolio Template',
+        category: 'template',
+        description:
+          'A clean and modern portfolio template built with React and Tailwind CSS.',
+        features: [
+          'Responsive design',
+          'Dark mode support',
+          'Easy customization',
+          'SEO optimized',
+        ],
+        price: 150000,
+        image:
+          'https://placehold.co/600x400/png?text=Modern+Portfolio+Template',
+        demo: 'https://example.com/demo/portfolio',
+      },
+      {
+        id: 2,
+        title: 'Landing Page for SaaS',
+        category: 'landing-page',
+        description:
+          'A minimalistic landing page template for SaaS products with smooth animations.',
+        features: [
+          'Animated hero section',
+          'Pricing table',
+          'Contact form',
+          'Mobile friendly',
+        ],
+        price: 120000,
+        image: 'https://placehold.co/600x400/png?text=Landing+Page+SaaS',
+        demo: 'https://example.com/demo/saas-landing',
+      },
+      {
+        id: 3,
+        title: 'Todo App with Vue.js',
+        category: 'app',
+        description:
+          'A simple and elegant todo app built with Vue.js and localStorage support.',
+        features: [
+          'Add, edit, delete tasks',
+          'Task filtering',
+          'Dark mode toggle',
+          'Responsive UI',
+        ],
+        price: 100000,
+        image: 'https://placehold.co/600x400/png?text=Todo+App+Vue.js',
+        demo: 'https://example.com/demo/todo-vue',
+      },
+      {
+        id: 4,
+        title: 'E-commerce Template',
+        category: 'template',
+        description:
+          'A modern e-commerce template with product grid, cart, and checkout pages.',
+        features: [
+          'Product filtering',
+          'Shopping cart',
+          'Checkout form',
+          'Mobile optimized',
+        ],
+        price: 180000,
+        image: 'https://placehold.co/600x400/png?text=E-commerce+Template',
+        demo: 'https://example.com/demo/ecommerce-template',
+      },
+      {
+        id: 5,
+        title: 'Landing Page for Mobile App',
+        category: 'landing-page',
+        description:
+          'A vibrant landing page template designed for mobile app promotion.',
+        features: [
+          'App features section',
+          'Download buttons',
+          'Testimonials',
+          'Responsive layout',
+        ],
+        price: 110000,
+        image: 'https://placehold.co/600x400/png?text=Landing+Page+Mobile+App',
+        demo: 'https://example.com/demo/mobile-app-landing',
+      },
+      {
+        id: 6,
+        title: 'Weather App with React',
+        category: 'app',
+        description:
+          'A small weather app fetching data from OpenWeather API with React hooks.',
+        features: [
+          'Current weather display',
+          'Search by city',
+          'Responsive design',
+          'Clean UI',
+        ],
+        price: 130000,
+        image: 'https://placehold.co/600x400/png?text=Weather+App+React',
+        demo: 'https://example.com/demo/weather-react',
+      },
+      {
+        id: 7,
+        title: 'Blog Template',
+        category: 'template',
+        description:
+          'A minimal blog template with clean typography and easy navigation.',
+        features: [
+          'Post listing',
+          'Single post page',
+          'Responsive design',
+          'SEO friendly',
+        ],
+        price: 140000,
+        image: 'https://placehold.co/600x400/png?text=Blog+Template',
+        demo: 'https://example.com/demo/blog-template',
+      },
+      {
+        id: 8,
+        title: 'Landing Page for Event',
+        category: 'landing-page',
+        description:
+          'A colorful landing page template for event promotion with countdown timer.',
+        features: [
+          'Event details',
+          'Countdown timer',
+          'Registration form',
+          'Mobile friendly',
+        ],
+        price: 115000,
+        image: 'https://placehold.co/600x400/png?text=Landing+Page+Event',
+        demo: 'https://example.com/demo/event-landing',
+      },
+      {
+        id: 9,
+        title: 'Chat App with Socket.io',
+        category: 'app',
+        description:
+          'A real-time chat application using Node.js, Express, and Socket.io.',
+        features: [
+          'Real-time messaging',
+          'Multiple rooms',
+          'User list',
+          'Responsive UI',
+        ],
+        price: 200000,
+        image: 'https://placehold.co/600x400/png?text=Chat+App+Socket.io',
+        demo: 'https://example.com/demo/chat-app',
+      },
+      {
+        id: 10,
+        title: 'Admin Dashboard Template',
+        category: 'template',
+        description:
+          'A clean and modern admin dashboard template with charts and tables.',
+        features: [
+          'Responsive layout',
+          'Chart.js integration',
+          'Sidebar navigation',
+          'Dark mode support',
+        ],
+        price: 190000,
+        image: 'https://placehold.co/600x400/png?text=Admin+Dashboard',
+        demo: 'https://example.com/demo/admin-dashboard',
+      },
+      {
+        id: 11,
+        title: 'Landing Page for Startup',
+        category: 'landing-page',
+        description:
+          'A sleek landing page template designed for startups and tech companies.',
+        features: [
+          'Hero section with CTA',
+          'Features overview',
+          'Team section',
+          'Responsive design',
+        ],
+        price: 125000,
+        image: 'https://placehold.co/600x400/png?text=Landing+Page+Startup',
+        demo: 'https://example.com/demo/startup-landing',
+      },
+      {
+        id: 12,
+        title: 'Expense Tracker App',
+        category: 'app',
+        description:
+          'A simple expense tracker app built with React and localStorage.',
+        features: [
+          'Add and delete expenses',
+          'Monthly summary',
+          'Responsive UI',
+          'Dark mode toggle',
+        ],
+        price: 135000,
+        image: 'https://placehold.co/600x400/png?text=Expense+Tracker+App',
+        demo: 'https://example.com/demo/expense-tracker',
+      },
+      {
+        id: 13,
+        title: 'Portfolio Landing Page',
+        category: 'landing-page',
+        description:
+          'A minimal portfolio landing page template with smooth scroll and animations.',
+        features: [
+          'Smooth scroll',
+          'Animated sections',
+          'Contact form',
+          'Mobile optimized',
+        ],
+        price: 105000,
+        image: 'https://placehold.co/600x400/png?text=Portfolio+Landing+Page',
+        demo: 'https://example.com/demo/portfolio-landing',
+      },
+      {
+        id: 14,
+        title: 'Recipe App',
+        category: 'app',
+        description:
+          'A small recipe app with search and filter functionality built with Vue.js.',
+        features: [
+          'Recipe search',
+          'Category filter',
+          'Responsive design',
+          'Clean UI',
+        ],
+        price: 145000,
+        image: 'https://placehold.co/600x400/png?text=Recipe+App+Vue.js',
+        demo: 'https://example.com/demo/recipe-app',
+      },
+      {
+        id: 15,
+        title: 'Corporate Website Template',
+        category: 'template',
+        description:
+          'A professional corporate website template with multiple sections and contact form.',
+        features: [
+          'Multi-section layout',
+          'Contact form',
+          'Responsive design',
+          'SEO optimized',
+        ],
+        price: 160000,
+        image: 'https://placehold.co/600x400/png?text=Corporate+Website',
+        demo: 'https://example.com/demo/corporate-website',
+      },
+    ];
+
+    // Format price to Indonesian Rupiah format
+    function formatPrice(price) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+      }).format(price);
+    }
+
+    // Render products grid
+    const productsGrid = document.getElementById('productsGrid');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+
+    function renderProducts(filter = '', search = '') {
+      productsGrid.innerHTML = '';
+      const filtered = products.filter((p) => {
+        const matchesCategory = filter ? p.category === filter : true;
+        const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase());
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        productsGrid.innerHTML =
+          '<p class="text-center col-span-full text-gray-500 dark:text-gray-400">No products found.</p>';
+        return;
+      }
+
+      filtered.forEach((product) => {
+        const card = document.createElement('div');
+        card.className =
+          'card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition transform hover:-translate-y-1';
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `View details of ${product.title}`);
+
+        card.innerHTML = `
+          <img
+            src="${product.image}"
+            alt="Screenshot preview of ${product.title}, a ${product.category} source code product"
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">${product.title}</h3>
+            <p class="text-indigo-600 font-bold">${formatPrice(product.price)}</p>
+          </div>
+        `;
+
+        card.addEventListener('click', () => openProductDetail(product.id));
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openProductDetail(product.id);
+          }
+        });
+
+        productsGrid.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener('input', () => {
+      renderProducts(categoryFilter.value, searchInput.value);
+    });
+
+    categoryFilter.addEventListener('change', () => {
+      renderProducts(categoryFilter.value, searchInput.value);
+    });
+
+    renderProducts();
+
+    // Product Detail Modal Logic
+    const productDetailModal = document.getElementById('productDetailModal');
+    const closeProductDetailBtn = document.getElementById('closeProductDetailBtn');
+    const productDetailTitle = document.getElementById('productDetailTitle');
+    const productDetailImage = document.getElementById('productDetailImage');
+    const productDescription = document.getElementById('productDescription');
+    const productFeatures = document.getElementById('productFeatures');
+    const productPrice = document.getElementById('productPrice');
+    const productDemoIframe = document.getElementById('productDemoIframe');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+
+    let currentProduct = null;
+
+    function openProductDetail(productId) {
+      currentProduct = products.find((p) => p.id === productId);
+      if (!currentProduct) return;
+
+      productDetailTitle.textContent = currentProduct.title;
+      productDetailImage.src = currentProduct.image;
+      productDetailImage.alt = `Screenshot preview of ${currentProduct.title}, a ${currentProduct.category} source code product`;
+      productDescription.textContent = currentProduct.description;
+      productFeatures.innerHTML = '';
+      currentProduct.features.forEach((feature) => {
+        const li = document.createElement('li');
+        li.textContent = feature;
+        productFeatures.appendChild(li);
+      });
+      productPrice.textContent = formatPrice(currentProduct.price);
+      productDemoIframe.src = currentProduct.demo;
+
+      productDetailModal.classList.remove('hidden');
+      productDetailModal.focus();
+    }
+
+    closeProductDetailBtn.addEventListener('click', () => {
+      productDetailModal.classList.add('hidden');
+      productDemoIframe.src = '';
+    });
+
+    productDetailModal.addEventListener('click', (e) => {
+      if (e.target === productDetailModal) {
+        productDetailModal.classList.add('hidden');
+        productDemoIframe.src = '';
+      }
+    });
+
+    // Cart Logic
+    const cartBtn = document.getElementById('cartBtn');
+    const mobileCartBtn = document.getElementById('mobileCartBtn');
+    const cartSidebar = document.getElementById('cartSidebar');
+    const closeCartBtn = document.getElementById('closeCartBtn');
+    const cartItemsContainer = document.getElementById('cartItemsContainer');
+    const cartCount = document.getElementById('cartCount');
+    const mobileCartCount = document.getElementById('mobileCartCount');
+    const cartTotal = document.getElementById('cartTotal');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function updateCartUI() {
+      cartCount.textContent = cart.reduce((acc, item) => acc + item.quantity, 0);
+      mobileCartCount.textContent = cartCount.textContent;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML =
+          '<p class="text-gray-500 dark:text-gray-400">Your cart is empty.</p>';
+        checkoutBtn.disabled = true;
+        cartTotal.textContent = formatPrice(0);
+        return;
+      }
+
+      cartItemsContainer.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item) => {
+        const product = products.find((p) => p.id === item.productId);
+        if (!product) return;
+
+        total += product.price * item.quantity;
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'flex items-center space-x-4';
+
+        itemDiv.innerHTML = `
+          <img
+            src="${product.image}"
+            alt="Thumbnail of ${product.title}"
+            class="w-16 h-16 object-cover rounded"
+          />
+          <div class="flex-grow">
+            <h4 class="font-semibold text-gray-900 dark:text-gray-100">${product.title}</h4>
+            <p class="text-indigo-600 font-bold">${formatPrice(product.price)}</p>
+            <div class="flex items-center space-x-2 mt-1">
+              <button aria-label="Decrease quantity" class="quantity-btn text-gray-600 dark:text-gray-300 hover:text-indigo-600" data-action="decrease" data-id="${product.id}">
+                <i class="fas fa-minus"></i>
+              </button>
+              <span class="px-2">${item.quantity}</span>
+              <button aria-label="Increase quantity" class="quantity-btn text-gray-600 dark:text-gray-300 hover:text-indigo-600" data-action="increase" data-id="${product.id}">
+                <i class="fas fa-plus"></i>
+              </button>
+              <button aria-label="Remove item" class="remove-btn text-red-600 hover:text-red-800 ml-4" data-id="${product.id}">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+
+        cartItemsContainer.appendChild(itemDiv);
+      });
+
+      cartTotal.textContent = formatPrice(total);
+      checkoutBtn.disabled = false;
+
+      // Attach event listeners for quantity buttons and remove buttons
+      document.querySelectorAll('.quantity-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const action = btn.getAttribute('data-action');
+          const id = parseInt(btn.getAttribute('data-id'));
+          const cartItem = cart.find((c) => c.productId === id);
+          if (!cartItem) return;
+
+          if (action === 'increase') {
+            cartItem.quantity++;
+          } else if (action === 'decrease') {
+            if (cartItem.quantity > 1) {
+              cartItem.quantity--;
+            }
+          }
+          saveCart();
+          updateCartUI();
+        });
+      });
+
+      document.querySelectorAll('.remove-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const id = parseInt(btn.getAttribute('data-id'));
+          cart = cart.filter((c) => c.productId !== id);
+          saveCart();
+          updateCartUI();
+        });
+      });
+    }
+
+    function openCart() {
+      cartSidebar.classList.remove('translate-x-full');
+    }
+    function closeCart() {
+      cartSidebar.classList.add('translate-x-full');
+    }
+
+    cartBtn.addEventListener('click', openCart);
+    mobileCartBtn.addEventListener('click', () => {
+      openCart();
+      closeMobileMenu();
+    });
+    closeCartBtn.addEventListener('click', closeCart);
+
+    addToCartBtn.addEventListener('click', () => {
+      if (!currentProduct) return;
+      const existing = cart.find((c) => c.productId === currentProduct.id);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({ productId: currentProduct.id, quantity: 1 });
+      }
+      saveCart();
+      updateCartUI();
+      productDetailModal.classList.add('hidden');
+      productDemoIframe.src = '';
+      openCart();
+    });
+
+    updateCartUI();
+
+    // Checkout Button Click Handler (stub for integration)
+    checkoutBtn.addEventListener('click', () => {
+      if (cart.length === 0) return;
+      alert(
+        'Checkout process will be implemented with Tripay API integration in backend.'
+      );
+    });
+
+    // Authentication & User Profile (simplified frontend stub)
+    const authSection = document.getElementById('authSection');
+
+    // Simple state to simulate logged in user
+    let user = JSON.parse(localStorage.getItem('user')) || null;
+    let purchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+
+    function renderAuthSection() {
+      authSection.innerHTML = '';
+      if (!user) {
+        // Show login/register forms
+        const container = document.createElement('div');
+        container.className = 'max-w-md mx-auto space-y-6';
+
+        container.innerHTML = `
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Login</h3>
+            <form id="loginForm" class="space-y-4">
+              <input type="email" id="loginEmail" placeholder="Email" required class="input w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200" />
+              <input type="password" id="loginPassword" placeholder="Password" required class="input w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200" />
+              <button type="submit" class="btn-primary bg-indigo-600 hover:bg-indigo-700 text-white w-full py-2 rounded-md transition">Login</button>
+            </form>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-4">Register</h3>
+            <form id="registerForm" class="space-y-4">
+              <input type="email" id="registerEmail" placeholder="Email" required class="input w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200" />
+              <input type="password" id="registerPassword" placeholder="Password" required class="input w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200" />
+              <button type="submit" class="btn-primary bg-green-600 hover:bg-green-700 text-white w-full py-2 rounded-md transition">Register</button>
+            </form>
+          </div>
+        `;
+
+        authSection.appendChild(container);
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = document.getElementById('loginEmail').value.trim();
+          const password = document.getElementById('loginPassword').value.trim();
+          // Simulate login success
+          user = { email };
+          localStorage.setItem('user', JSON.stringify(user));
+          alert('Login successful (simulated)');
+          renderAuthSection();
+        });
+
+        // Register form handler
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = document.getElementById('registerEmail').value.trim();
+          const password = document.getElementById('registerPassword').value.trim();
+          // Simulate registration success
+          user = { email };
+          localStorage.setItem('user', JSON.stringify(user));
+          alert('Registration successful (simulated)');
+          renderAuthSection();
+        });
+      } else {
+        // Show profile info and purchase history
+        const container = document.createElement('div');
+        container.className = 'max-w-3xl mx-auto space-y-6';
+
+        container.innerHTML = `
+          <div class="flex justify-between items-center">
+            <h3 class="text-xl font-semibold">Welcome, ${user.email}</h3>
+            <button id="logoutBtn" class="btn-primary bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition">Logout</button>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold mb-4">Purchase History</h4>
+            <div id="purchaseHistoryList" class="space-y-4">
+              <!-- Purchase items inserted here -->
+            </div>
+          </div>
+        `;
+
+        authSection.appendChild(container);
+
+        const purchaseHistoryList = document.getElementById('purchaseHistoryList');
+
+        if (purchaseHistory.length === 0) {
+          purchaseHistoryList.innerHTML =
+            '<p class="text-gray-500 dark:text-gray-400">No purchases yet.</p>';
+        } else {
+          purchaseHistoryList.innerHTML = '';
+          purchaseHistory.forEach((order) => {
+            const orderDiv = document.createElement('div');
+            orderDiv.className =
+              'border border-gray-300 dark:border-gray-700 rounded-md p-4 bg-white dark:bg-gray-800';
+
+            orderDiv.innerHTML = `
+              <p><strong>Order ID:</strong> ${order.id}</p>
+              <p><strong>Date:</strong> ${new Date(order.date).toLocaleString()}</p>
+              <p><strong>Status:</strong> <span class="capitalize">${order.status}</span></p>
+              <ul class="list-disc list-inside mt-2">
+                ${order.items
+                  .map(
+                    (item) =>
+                      `<li>${item.title} - Quantity: ${item.quantity} - <a href="${item.downloadLink}" target="_blank" class="text-indigo-600 hover:underline">Download</a></li>`
+                  )
+                  .join('')}
+              </ul>
+            `;
+
+            purchaseHistoryList.appendChild(orderDiv);
+          });
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+          user = null;
+          localStorage.removeItem('user');
+          alert('Logged out');
+          renderAuthSection();
+        });
+      }
+    }
+
+    renderAuthSection();
+
+    // Accessibility: trap focus in modals and sidebars (basic)
+    function trapFocus(element) {
+      const focusableElements =
+        'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
+      const firstFocusableElement = element.querySelectorAll(focusableElements)[0];
+      const focusableContent = element.querySelectorAll(focusableElements);
+      const lastFocusableElement = focusableContent[focusableContent.length - 1];
+
+      element.addEventListener('keydown', function (e) {
+        let isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+
+        if (!isTabPressed) {
+          return;
+        }
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstFocusableElement) {
+            lastFocusableElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastFocusableElement) {
+            firstFocusableElement.focus();
+            e.preventDefault();
+          }
+        }
+      });
+
+      firstFocusableElement.focus();
+    }
+
+    productDetailModal.addEventListener('transitionend', () => {
+      if (!productDetailModal.classList.contains('hidden')) {
+        trapFocus(productDetailModal);
+      }
+    });
+
+    cartSidebar.addEventListener('transitionend', () => {
+      if (!cartSidebar.classList.contains('translate-x-full')) {
+        trapFocus(cartSidebar);
+      }
+    });
+  </script>
+</body>
+</html>
